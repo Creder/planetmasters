@@ -6,10 +6,12 @@ import by.sergeybukatyi.planetmasters.repositories.PlanetRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class PlanetService {
 
     private final PlanetRepository planetRepository;
@@ -44,6 +46,11 @@ public class PlanetService {
         return planetRepository.findByName(name);
     }
 
+    @Transactional(readOnly = true)
+    public String getMasterName(String planetName){
+        Planet planet = planetRepository.findByName(planetName);
+        return planet.getMaster().getName();
+    }
     public String setMasterToPlanet(String masterName, String planetName){
         Master master = masterService.getMasterByName(masterName);
         Planet planet = getPlanetByName(planetName);
